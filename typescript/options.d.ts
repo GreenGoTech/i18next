@@ -12,6 +12,7 @@ import type { $MergeBy, $PreservedValue, $Dictionary } from './helpers.js';
  *     defaultNS: 'custom';
  *     returnNull: false;
  *     returnObjects: false;
+ *     omitFirstNamespace: true;
  *     nsSeparator: ':';
  *     keySeparator: '.';
  *     jsonFormat: 'v4';
@@ -48,6 +49,11 @@ export type TypeOptions = $MergeBy<
      * Allows objects as valid translation result
      */
     returnObjects: false;
+
+    /**
+     * Allows first namespace omission in key
+     */
+    omitFirstNamespace: true;
 
     /**
      * Char to separate keys
@@ -106,6 +112,10 @@ export type TypeOptions = $MergeBy<
      * Suffix for interpolation
      */
     interpolationSuffix: '}}';
+
+    /**
+     * Allow
+     */
   },
   CustomTypeOptions
 >;
@@ -534,6 +544,12 @@ export interface InitOptions<T = object> extends PluginOptions<T> {
   returnObjects?: boolean;
 
   /**
+   * Allows first namespace omission in key
+   * @default true
+   */
+  omitFirstNamespace?: boolean;
+
+  /**
    * Returns an object that includes information about the used language, namespace, key and value
    * @default false
    */
@@ -735,6 +751,10 @@ export interface TOptionsBase {
    * Accessing an object not a translation string (can be set globally too)
    */
   returnObjects?: boolean;
+  /**
+   * Allows omiting first namespace in key (can be set globally too)
+   */
+  omitFirstNamespace?: boolean;
   /**
    * Returns an object that includes information about the used language, namespace, key and value
    */

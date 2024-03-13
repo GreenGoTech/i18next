@@ -130,7 +130,9 @@ export type ParseKeys<
   ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
 > = $IsResourcesDefined extends true
   ? FilterKeysByContext<
-      | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+      | (TOpt['omitFirstNamespace'] extends true
+          ? ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
+          : never)
       | ParseKeysByNamespaces<ActualNS, Keys>
       | ParseKeysByFallbackNs<Keys>,
       TOpt
