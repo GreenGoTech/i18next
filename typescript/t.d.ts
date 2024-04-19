@@ -90,13 +90,11 @@ type ResourceKeys<WithReturnObjects = _ReturnObjects> = WithReturnObjects extend
 /** **********************************************************************
  * Parse t function keys based on the namespace, options and key prefix *
  *********************************************************************** */
-export type KeysByTOptions<TOpt extends TOptions> = TOpt['returnObjects'] extends true
+export type KeysByTOptions<ReturnObjects> = ReturnObjects extends true
   ? ResourceKeys<true>
   : ResourceKeys;
 
-export type NsByTOptions<Ns extends Namespace, TOpt extends TOptions> = TOpt['ns'] extends Namespace
-  ? TOpt['ns']
-  : Ns;
+export type NsByTOptions<Ns extends Namespace, NsOpt> = NsOpt extends Namespace ? NsOpt : Ns;
 
 type ParseKeysByKeyPrefix<Keys, KPrefix> = KPrefix extends string
   ? Keys extends `${KPrefix}${_KeySeparator}${infer Key}`
@@ -126,15 +124,14 @@ export type ParseKeys<
   Ns extends Namespace = DefaultNamespace,
   TOpt extends TOptions = {},
   KPrefix = undefined,
-  Keys extends $Dictionary = KeysByTOptions<TOpt>,
-  ActualNS extends Namespace = NsByTOptions<Ns, TOpt>,
-  Context extends TOpt['context'] = TOpt['context'],
+  Keys extends $Dictionary = KeysByTOptions<TOpt['returnObjects']>,
+  ActualNS extends Namespace = NsByTOptions<Ns, TOpt['ns']>,
 > = $IsResourcesDefined extends true
   ? FilterKeysByContext<
       | ParseKeysByKeyPrefix<Keys[$FirstNamespace<ActualNS>], KPrefix>
       | ParseKeysByNamespaces<ActualNS, Keys>
       | ParseKeysByFallbackNs<Keys>,
-      Context
+      TOpt['context']
     >
   : string;
 
